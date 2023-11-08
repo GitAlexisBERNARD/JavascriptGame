@@ -8,7 +8,7 @@ const attackRangeIndicator = document.getElementById('attack-range-indicator');
 let playerPosition = gameContainer.offsetWidth / 2; // Commence au milieu de l'écran
 const playerSpeed = 5; // Vitesse du déplacement du joueur
 const enemySpeed = 1; // Vitesse à laquelle les ennemis s'approchent
-const attackRange = 600; // Distance à laquelle les ennemis attaquent le joueur
+const attackRange = 200; // Distance à laquelle les ennemis attaquent le joueur
 let isAttacking = false; // variable pour suivre si le joueur est en train d'attaquer   
 let enemies = []; // Tableau pour stocker les ennemis
 let lives = 3; // le joueur commence avec 3 vies
@@ -118,6 +118,17 @@ function removeLife() {
     }
   }
 }
+function updateAttackRangeIndicator() {
+  const attackRangeBar = document.getElementById('attack-range-bar');
+  
+  // Positionnez la barre d'attaque sous le joueur en utilisant la moitié de la largeur du joueur pour centrer
+  const barPositionX = playerPosition + (player.offsetWidth / 2) - (attackRange / 2);
+  const barPositionY = player.offsetTop + player.offsetHeight;
+
+  attackRangeBar.style.left = `${barPositionX}px`;
+  attackRangeBar.style.top = `${barPositionY}px`;
+  attackRangeBar.style.width = `${attackRange}px`;
+}
 
 function gameOver() {
   alert('Game Over!');
@@ -125,19 +136,14 @@ function gameOver() {
   resetGame();
 }
 
-function updateAttackRangeIndicator() {
-  attackRangeIndicator.style.left = `${playerPosition}px`; // Commencer la ligne là où le joueur se trouve
-  attackRangeIndicator.style.width = `${attackRange}px`; // La longueur de la ligne est la portée d'attaque
-}
-
 function gameLoop() {
   updateEnemies();
   
   // Générer des ennemis de façon aléatoire
+  updateAttackRangeIndicator();
   if (Math.random() < 0.02) { // Ajustez ce nombre pour changer la fréquence d'apparition des ennemis
     spawnEnemy();
   }
-  
   requestAnimationFrame(gameLoop);
 }
 
