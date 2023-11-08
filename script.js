@@ -11,6 +11,8 @@ const enemySpeed = 1; // Vitesse à laquelle les ennemis s'approchent
 const attackRange = 600; // Distance à laquelle les ennemis attaquent le joueur
 let isAttacking = false; // variable pour suivre si le joueur est en train d'attaquer   
 let enemies = []; // Tableau pour stocker les ennemis
+let lives = 3; // le joueur commence avec 3 vies
+let isInvincible = false; // Indicateur d'invincibilité
 
 document.addEventListener('keydown', function(event) {
   if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
@@ -73,12 +75,11 @@ function updateEnemies() {
     // Si le joueur est en train d'attaquer, on saute la vérification de collision
     if (!isAttacking) {
       // Vérifier si l'ennemi a atteint la position du joueur pour déclencher game over
-      if ((enemy.direction === 1 && enemy.xPosition >= playerPosition && enemy.xPosition < playerPosition + player.offsetWidth) ||
-          (enemy.direction === -1 && enemy.xPosition <= playerPosition + player.offsetWidth && enemy.xPosition > playerPosition)) {
-        // L'ennemi a touché le joueur, déclencher game over
-        gameOver();
-        return; // Sortir de la fonction car le jeu est terminé
-      }
+if ((enemy.direction === 1 && enemy.xPosition >= playerPosition && enemy.xPosition < playerPosition + player.offsetWidth) ||
+    (enemy.direction === -1 && enemy.xPosition <= playerPosition + player.offsetWidth && enemy.xPosition > playerPosition)) {
+  removeLife(); // le joueur perd une vie au lieu de game over
+  return; // sortir de la fonction si vous voulez arrêter de vérifier les autres ennemis après avoir perdu une vie
+}
     }
 
     // Mettre à jour la position de l'ennemi sur l'écran
@@ -86,21 +87,42 @@ function updateEnemies() {
   }
 }
 
+function resetGame() {
+  // Réinitialiser les vies visuellement
+  const livesContainer = document.getElementById('lives-container');
+  livesContainer.innerHTML = `
+    <img src="heart.png" class="life" />
+    <img src="heart.png" class="life" />
+    <img src="heart.png" class="life" />
+  `;
+  lives = 3;
+  // autre logique de réinitialisation du jeu
+}
+
+function removeLife() {
+  if (!isInvincible) {
+    lives--; // décrémenter le nombre de vies
+    const livesContainer = document.getElementById('lives-container');
+    if (livesContainer.children.length > 0) {
+      livesContainer.removeChild(livesContainer.children[0]); // enlever une icône de vie du DOM
+    }
+
+    if (lives <= 0) {
+      gameOver(); // fin du jeu si le joueur n'a plus de vies
+    } else {
+      // Début de la période d'invincibilité
+      isInvincible = true;
+      setTimeout(() => {
+        isInvincible = false; // Le joueur peut à nouveau perdre des vies après 3 secondes, par exemple
+      }, 3000);
+    }
+  }
+}
 
 function gameOver() {
-  alert('Game Over!'); // Vous pouvez remplacer cela par une meilleure logique de fin de jeu
-
-  // Supprimer tous les ennemis
-  enemies.forEach(enemy => {
-    gameContainer.removeChild(enemy.element);
-  });
-  enemies = [];
-
-  // Réinitialiser la position du joueur
-  playerPosition = gameContainer.offsetWidth / 2;
-  player.style.left = `${playerPosition}px`;
-
-  // Peut-être arrêter le jeu ou offrir un redémarrage ici
+  alert('Game Over!');
+  // votre logique de fin de jeu
+  resetGame();
 }
 
 function updateAttackRangeIndicator() {
