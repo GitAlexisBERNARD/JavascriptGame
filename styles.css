@@ -1,0 +1,68 @@
+html,
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    /* Empêche le défilement de la page */
+    height: 100%;
+}
+
+#game-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background: #000;
+    /* Couleur de fond, à ajuster selon votre design */
+    overflow: hidden;
+    /* Cache les éléments hors du conteneur */
+}
+
+#player {
+    position: absolute;
+    bottom: 50px;
+    /* Ajustez cette valeur pour déterminer la position du joueur */
+    left: 50%;
+    /* Centre le joueur horizontalement */
+    transform: translateX(-50%);
+    /* Centre précisément le joueur */
+    width: 50px;
+    /* Largeur du joueur */
+    height: 50px;
+    /* Hauteur du joueur */
+    background: url('epeiste.jpg') no-repeat center center;
+    background-size: contain;
+ 
+}
+
+#enemies {
+    width: 100%;
+    position: absolute;
+    top: 0;
+}
+
+.enemy {
+    position: absolute;
+    width: 30px;
+    /* Largeur de l'ennemi */
+    height: 30px;
+    /* Hauteur de l'ennemi */
+    background: url('red.png') no-repeat center center;
+    background-size: contain;
+}
+#attack-range-indicator {
+    position: absolute;
+    height: 2px;
+    /* Epaisseur de la ligne */
+    background-color: red;
+    /* Couleur de la ligne */
+    width: 0;
+    /* On va le définir dynamiquement dans le JS */
+    top: 50%;
+    /* Ajustez cela pour qu'il soit aligné avec le joueur */
+    transform: translateY(-50%);
+    /* Centre la ligne verticalement */
+    left: 0;
+    /* Position de départ, qui sera mise à jour par le JS */
+    transition: width 0.2s;
+    /* Transition pour montrer la portée s'étendant/revenant */
+}
